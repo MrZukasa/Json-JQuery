@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function(){
+        $("button").click(function(){
+          $("#uno").empty();
+          $.ajax('test.json',{
+            dataType:'json',
+            timeout:500,
+            success:function(data){
+              $("#uno").append('<h3> Lettura in AJAX: </h3>');
+              $.each(data,function(index,item) {
+                $('#uno').append('<li> Name: '+item.Name+' - Age: '+item.Age+' </li>');
+              })
+            }
+          })
+        });
+      });
+    </script>
+    <script>
+    $(document).ready(function(){
+      $("button").click(function(){
+        $("#due").empty();
+        $.getJSON('test.json',function(data){
+          $("#due").append('<h3> Lettura in JSON: </h3>');
+          $.each(data,function(index,item){
+            $('#due').append('<li> Name: '+item.Name+' - Age: '+item.Age+' </li>');
+            console.log(item);
+          })
+        })
+      })
+    })              
+    </script>
+    <title>Jquery JSON + AJAX</title>
+  </head>
+  <body>
+    <button>Click</button>
+    <p id="uno" style="color:chocolate;"></p>
+    <p id="due" style="color:darkcyan"></p>
+  </body>
+</html>
