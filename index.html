@@ -17,9 +17,9 @@
               $("#uno").append('<h3> Lettura in AJAX: </h3>');
               $.each(data,function(index,item) {
                 $('#uno').append('<li> Name: '+item.Name+' - Age: '+item.Age+' </li>');
-              })
+              });
             }
-          })
+          });
         });
       });
     </script>
@@ -33,32 +33,37 @@
           $.each(data,function(index,item){
             $('#due').append('<li> Name: '+item.Name+' - Age: '+item.Age+' </li>');
             console.log(item);
-          })
-        })
-      })
-    })              
+          });
+        });
+      });
+    });
     </script>
 
     <script>          //insert data via AJAX PHP call      
-      $(document).ready(function(){      
+      $(document).ready(function(){
+        var dati = [];
+        var anagrafica = new Object();  
         $("#submit").click(function(){
-          var dati = [];
-          var anagrafica = new Object();
+          $.getJSON('test.json',function(data){
+            $.each(data,function(index,item){
+              dati.push(item);              
+            });
+          });
           anagrafica.Name = $("#Name").val();
-          anagrafica.Age = parseInt($("#Age").val());          
+          anagrafica.Age = parseInt($("#Age").val());
           dati.push(anagrafica);
+          console.log(dati);
           $.ajax({
             type: "GET",
             dataType: 'json',
             async: true,
             url: "save_json.php",
             data: { data: JSON.stringify(dati) },
-            success:function(){alert("Done!");},
-            failure: function(){alert("Errore!");}
+            success:function(){console.log("Done!");},
+            failure: function(){console.log("Errore!");}
           });          
-          console.log(JSON.stringify(dati))
-        });
-      });      
+        });        
+      });
     </script>
 
     <title>Jquery JSON + AJAX</title>    
