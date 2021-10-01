@@ -3,10 +3,12 @@
   <head>
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>    <!--Adding JQUERY CDN-->
+    <script src="https://unpkg.com/vue"></script>  <!--Adding VUE CDN -->
+
+    <script>              //AJAX method
       $(document).ready(function(){
-        $("button").click(function(){
+        $("#read").click(function(){
           $("#uno").empty();
           $.ajax('test.json',{
             dataType:'json',
@@ -21,9 +23,10 @@
         });
       });
     </script>
-    <script>
+
+    <script>    //JSON Method
     $(document).ready(function(){
-      $("button").click(function(){
+      $("#read").click(function(){
         $("#due").empty();
         $.getJSON('test.json',function(data){
           $("#due").append('<h3> Lettura in JSON: </h3>');
@@ -35,11 +38,43 @@
       })
     })              
     </script>
-    <title>Jquery JSON + AJAX</title>
+
+    <script>          //insert data via AJAX PHP call      
+      $(document).ready(function(){      
+        $("#submit").click(function(){
+          var dati = [];
+          var anagrafica = new Object();
+          anagrafica.Name = $("#Name").val();
+          anagrafica.Age = parseInt($("#Age").val());          
+          dati.push(anagrafica);
+          $.ajax({
+            type: "GET",
+            dataType: 'json',
+            async: true,
+            url: "save_json.php",
+            data: { data: JSON.stringify(dati) },
+            success:function(){alert("Done!");},
+            failure: function(){alert("Errore!");}
+          });          
+          console.log(JSON.stringify(dati))
+        });
+      });      
+    </script>
+
+    <title>Jquery JSON + AJAX</title>    
   </head>
   <body>
-    <button>Click</button>
+    <button id="read">Read</button>
     <p id="uno" style="color:chocolate;"></p>
-    <p id="due" style="color:darkcyan"></p>
+    <p id="due" style="color:darkcyan"></p>    
+    <div>
+      <label>Name</label>
+      <input id="Name" type="text"></input>
+      <br></br>
+      <label>Age</label>
+      <input id="Age" type="number"></input>
+      <br></br>
+      <button id="submit">Submit</button>
+    </div>
   </body>
 </html>
