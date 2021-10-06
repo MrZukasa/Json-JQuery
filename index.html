@@ -2,17 +2,24 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">    
+    <!-- Inzio meta per non avere problemi di cache -->
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
+    <!-- Fine meta per non avere problemi di cache -->
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>    <!--Adding JQUERY CDN-->
     <script src="https://unpkg.com/vue"></script>  <!--Adding VUE CDN -->
+    <link rel="shortcut icon" href="#">   <!--favicon error-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
 
-    <script>              //AJAX method
-      $(document).ready(function(){
-        $("#read").click(function(){
+    <script>
+      function read() {
           $("#uno").empty();
-          $.ajax('test.json',{
+          $.ajax('test.json',{                         //AJAX method
             dataType:'json',
             timeout:500,
+            method:'GET',
             success:function(data){
               $("#uno").append('<h3> Lettura in AJAX: </h3>');
               $.each(data,function(index,item) {
@@ -20,50 +27,42 @@
               });
             }
           });
-        });
-      });
-    </script>
-
-    <script>    //JSON Method
-    $(document).ready(function(){
-      $("#read").click(function(){
         $("#due").empty();
-        $.getJSON('test.json',function(data){
+        $.getJSON('test.json',function(data){          //JSON Method
           $("#due").append('<h3> Lettura in JSON: </h3>');
           $.each(data,function(index,item){
-            $('#due').append('<li> Name: '+item.Name+' - Age: '+item.Age+' </li>');
-            console.log(item);
+            $('#due').append('<li> Name: '+item.Name+' - Age: '+item.Age+' </li>');            
           });
-        });
-      });
-    });
-    </script>
+        });    
+      };
 
-    <script>          //insert data via AJAX PHP call      
-      $(document).ready(function(){
+      function write() {
         var dati = [];
-        var anagrafica = new Object();  
+        var anagrafica = new Object();
+        anagrafica.Name = $("#Name").val();
+        anagrafica.Age = parseInt($("#Age").val());          
+        dati.push(anagrafica);        
+        $.ajax({
+          type: "GET",
+          dataType: 'json',
+          async: true,
+          url: "save_json.php",
+          data: { data: JSON.stringify(dati) },
+          success:function(){alert("Done!");},
+          failure: function(){alert("Errore!");}
+        });
+        console.log(JSON.stringify(dati))
+      };
+
+      $(document).ready(function(){
+        $("#read").click(function(){
+          read();
+        });
         $("#submit").click(function(){
-          $.getJSON('test.json',function(data){
-            $.each(data,function(index,item){
-              dati.push(item);              
-            });
-          });
-          anagrafica.Name = $("#Name").val();
-          anagrafica.Age = parseInt($("#Age").val());
-          dati.push(anagrafica);
-          console.log(dati);
-          $.ajax({
-            type: "GET",
-            dataType: 'json',
-            async: true,
-            url: "save_json.php",
-            data: { data: JSON.stringify(dati) },
-            success:function(){console.log("Done!");},
-            failure: function(){console.log("Errore!");}
-          });          
-        });        
-      });
+          write();
+          read();
+        });
+    });
     </script>
 
     <title>Jquery JSON + AJAX</title>    
@@ -79,7 +78,7 @@
       <label>Age</label>
       <input id="Age" type="number"></input>
       <br></br>
-      <button id="submit">Submit</button>
+      <button id="submit">Write</button>
     </div>
   </body>
 </html>
